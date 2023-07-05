@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib/",
+    "rootDir": "./src/",
+    "module": "commonjs",
+    "target": "ESNext",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "declaration": true,
+    "skipLibCheck": true
+  }
+}
