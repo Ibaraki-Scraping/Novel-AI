@@ -70,6 +70,19 @@ export class StoriesManager {
         if (!options.temp) options.temp = 100;
         if (!options.tokens_to_generate) options.tokens_to_generate = 200;
 
+        const encoder = new Encoder(options.model);
+
+        const bArray = encoder.encode(options.prompt);
+
+        const bytes: number[] = [];
+        for (const token of bArray) {
+            bytes.push(token & 0xff); // Lower 8 bits
+            bytes.push((token >> 8) & 0xff); // Upper 8 bits
+        }
+        const concatenatedBuffer = Buffer.from(bytes);
+
+        options.prompt = concatenatedBuffer.toString('base64');
+
         return JSON.parse((await this.ai['fetch']('/ai/generate-prompt', {
             method: 'POST',
             headers: {
@@ -78,7 +91,52 @@ export class StoriesManager {
         }, options)).body.toString());
     }
 
-    public async generate(options: {
+    public async generateStream(options: Awaited<Parameters<StoriesManager['_generate']>[0]>, events: (str: string) => any = ()=>{}): Promise<string> {
+
+        const body = await this._generate(({...options, stream: true }) as any);
+
+        const encoder = new Encoder(options.model || "euterpe-v2");
+
+        const res = [];
+
+        for (let data of body.split("\n").filter(e => e.startsWith("data:"))) {
+            data = data.replace("data:", "");
+            const buffer = Buffer.from(JSON.parse(data).token, 'base64');
+
+            const tokens: number[] = [];
+            for (let i = 0; i < buffer.length; i += 2) {
+                const lowerByte = buffer[i];
+                const upperByte = buffer[i + 1];
+                const token = lowerByte | (upperByte << 8);
+                tokens.push(token);
+            }
+
+            res.push(encoder.decode(tokens));
+
+            events(res[res.length - 1]);
+        }
+
+        return res.join("");
+    }
+
+    public async generate(options: Parameters<StoriesManager['_generate']>[0]): Promise<string> {
+        const body = await this._generate(options);
+
+        const buffer = Buffer.from(JSON.parse(body).output, 'base64');
+
+        const tokens: number[] = [];
+        for (let i = 0; i < buffer.length; i += 2) {
+            const lowerByte = buffer[i];
+            const upperByte = buffer[i + 1];
+            const token = lowerByte | (upperByte << 8);
+            tokens.push(token);
+        }
+
+        const encoder = new Encoder(options.model || "euterpe-v2");
+        return encoder.decode(tokens);
+    }
+
+    public async _generate(options: {
         input: string,
         model?: typeof StoryContent['prototype']['data']['settings']['model'],
         parameters?: {
@@ -137,7 +195,11 @@ export class StoriesManager {
 
         options.input = concatenatedBuffer.toString('base64');
 
-        const {status, body} = await this.ai['fetch']('/ai/generate', {
+        const stream = options['stream'];
+
+        delete options['stream'];
+
+        const {status, body} = await this.ai['fetch']('/ai/generate' + (stream ? "-stream" : ""), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -148,17 +210,7 @@ export class StoriesManager {
             throw new Error(body.toString());
         }
 
-        const buffer = Buffer.from(JSON.parse(body.toString()).output, 'base64');
-
-        const tokens: number[] = [];
-        for (let i = 0; i < buffer.length; i += 2) {
-            const lowerByte = buffer[i];
-            const upperByte = buffer[i + 1];
-            const token = lowerByte | (upperByte << 8);
-            tokens.push(token);
-        }
-
-        return encoder.decode(tokens);
+        return body.toString();
     }
 
 }

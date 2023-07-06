@@ -55,11 +55,12 @@ Use novel AI on a program !
 | --- | --- | --- |
 | ✅ | `POST` | `/ai/generate` |
 | ✅ | `POST` | `/ai/generate-prompt` (useless for now) |
-| ❌ | `POST` | `/ai/generate-stream` |
-| ✅ | `POST` | `/ai/generate-image` |
-| ❌ | `POST` | `/ai/annotate-image` |
+| ✅ | `POST` | `/ai/generate-stream` |
+| ✅ | `POST` | `/ai/generate-image` action: `generate` |
+| ✅ | `POST` | `/ai/generate-image` action: `img2img` |
+| ✅ | `POST` | `/ai/annotate-image` |
 | ✅ | `POST` | `/ai/upscale` |
-| ❌ | `POST` | `/ai/classify` |
+| ❌ | `POST` | `/ai/classify` (reserved to admins) |
 | ✅ | `GET` | `/ai/generate-image/suggest-tags` |
 | ✅ | `GET` | `/ai/generate-voice` |
 
