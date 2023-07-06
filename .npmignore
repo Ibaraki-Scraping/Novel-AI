@@ -3,3 +3,4 @@ test.png
 tsconfig.json
 src/
 lib/main.js
+lib/main.d.ts

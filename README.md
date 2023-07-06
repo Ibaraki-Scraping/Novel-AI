@@ -50,7 +50,7 @@ Use novel AI on a program !
 | ❌ | `DELETE` | `/user/objects/shelf/{id}` |
 | ❌ | `PATCH` | `/user/objects/shelf/{id}` |
 
-#### AI
+#### AI (Done)
 | Done | Method | Endpoint |
 | --- | --- | --- |
 | ✅ | `POST` | `/ai/generate` |
@@ -96,3 +96,49 @@ Use novel AI on a program !
 
 NovelAI API documentation : https://api.novelai.net/docs/   
 NovelAI SDK documentation : (coming soon)
+
+-------------------
+
+### Example
+```js
+
+const NovelAI = require('@ibaraki-douji/novelai').default;
+
+const nai = new NovelAI();
+
+nai.user.login('email', 'password').then(async () => {
+    const stories = await nai.stories.get();
+    console.log(stories);
+});
+
+```
+
+-------------------
+
+### Functions
+- `nai.user.login(email, password)`
+- `nai.user.getSubscription()`
+- `nai.user.getInformation()`
+- `nai.user.getData()`
+- `nai.user.getPriority()`
+- `nai.user.getGiftKeys()`
+- `nai.user.getUserInfos()`
+- `nai.user.getSettings()`
+- `nai.user.editSettings(settings)`
+-
+- `nai.stories.get()`
+- `nai.stories.get(id)`
+- `nai.stories.getContent()`
+- `nai.stories.getContent(id)`
+- `nai.stories.generatePrompt(options)`
+- `nai.stories.generate(options)`
+- `nai.stories.generateStream(options)`
+-
+- `nai.images.generate(options)`
+- `nai.images.enhance(options)`
+- `nai.images.getMask(options)`
+- `nai.images.createVariations(options)`
+- `nai.images.getSuggestedTags(options)`
+- `nai.images.upscale(options)`
+-
+- `nai.tts.generate(options)`
