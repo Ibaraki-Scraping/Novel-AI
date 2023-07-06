@@ -1,7 +1,7 @@
 export interface ImageRequest {
     input: string,
     model?: "nai-diffusion" | "safe-diffusion" | "nai-diffusuin-furry",
-    action?: "generate",
+    action?: "generate" | "img2img",
     parameters?: {
         width?: 512 | 640 | 768 | 832 | 1024 | 1088 | 1280 | 1472 | 1536 | 1920,
         height?: 512 | 640 | 768 | 832 | 1024 | 1088 | 1280 | 1472 | 1536 | 1920,
@@ -12,6 +12,6 @@ export interface ImageRequest {
         n_samples?: number,
         ucPreset?: number,
         qualityToggle?: boolean,
-        nagative_prompt?: string,
+        nagative_prompt?: string
     }
 }
