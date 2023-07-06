@@ -15,7 +15,7 @@ export class NovelAI {
 
     public readonly user = new UserManager(this);
 
-    public readonly image = new ImageManager(this);
+    public readonly images = new ImageManager(this);
 
     public readonly tts = new TTSManager(this);
 

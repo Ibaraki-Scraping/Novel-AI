@@ -47,4 +47,25 @@ export class ImageManager {
         }
     }
 
+    public async upscale(options: {
+        height: number,
+        image: Buffer,
+        scale: number,
+        width: number
+    }): Promise<Buffer> {
+        const {status, body} = await this.ai['fetch']('/ai/upscale', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }, {...options, image: options.image.toString('base64')});
+
+        if (status !== 200) {
+            throw new Error(body.toString());
+        } else {
+            const zip = new AdmZip(body);
+            return zip.getEntries()[0].getData();
+        }
+    }
+
 }
