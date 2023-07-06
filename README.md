@@ -9,16 +9,23 @@ Use novel AI on a program !
 ## This SDK is still in development, so it's not recommended to use it in production.
 
 ### API Endpoints
+#### User
 | Done | Method | Endpoint |
 | --- | --- | --- |
 | ✅ | `POST` | `/user/login` |
 | ✅ | `GET` | `/user/information` |
-| ❌ | `GET` | `/user/data` |
-| ❌ | `GET` | `/user/priority` |
-| ❌ | `GET` | `/user/giftkeys` |
+| ✅ | `GET` | `/user/data` |
+| ✅ | `GET` | `/user/priority` |
+| ✅ | `GET` | `/user/giftkeys` |
 | ✅ | `GET` | `/user/subscription` |
 | ✅ | `GET` | `/user/keystore` |
 | ❌ | `PUT` | `/user/keystore` |
+| ✅ | `GET` | `/user/clientsettings` |
+| ✅ | `PUT` | `/user/clientsettings` |
+
+#### Objects
+| Done | Method | Endpoint |
+| --- | --- | --- |
 | ✅ | `GET` | `/user/objects/stories` |
 | ✅ | `GET` | `/user/objects/stories/{id}` |
 | ❌ | `PUT` | `/user/objects/stories` |
@@ -44,17 +51,28 @@ Use novel AI on a program !
 | ❌ | `PUT` | `/user/objects/shelf` |
 | ❌ | `DELETE` | `/user/objects/shelf/{id}` |
 | ❌ | `PATCH` | `/user/objects/shelf/{id}` |
-| ❌ | `GET` | `/user/clientsettings` |
-| ❌ | `PUT` | `/user/clientsettings` |
-| ❌ | `POST` | `/ai/generate` |
-| ❌ | `POST` | `/ai/generate-prompt` |
+
+#### AI
+| Done | Method | Endpoint |
+| --- | --- | --- |
+| ✅ | `POST` | `/ai/generate` |
+| ✅ | `POST` | `/ai/generate-prompt` (useless for now) |
 | ❌ | `POST` | `/ai/generate-stream` |
 | ✅ | `POST` | `/ai/generate-image` |
 | ❌ | `POST` | `/ai/annotate-image` |
-| ❌ | `POST` | `/ai/upscale` |
+| ✅ | `POST` | `/ai/upscale` |
 | ❌ | `POST` | `/ai/classify` |
 | ✅ | `GET` | `/ai/generate-image/suggest-tags` |
 | ✅ | `GET` | `/ai/generate-voice` |
+
+#### AI Modules
+| Done | Method | Endpoint |
+| --- | --- | --- |
+| ❌ | `GET` | `/ai/module/all` |
+| ❌ | `GET` | `/ai/module/{id}` |
+| ❌ | `POST` | `/ai/module/train` |
+| ❌ | `POST` | `/ai/module/buy-training-steps` |
+| ❌ | `DELETE` | `/ai/module/{id}` |
 
 ### Additional functions
 | Done | Function |
@@ -73,7 +91,8 @@ Use novel AI on a program !
 | ❌ | `encrypt ai module` |
 | ❌ | `decrypt shelf` |
 | ❌ | `encrypt shelf` |
-
+| ✅ | `tokenizer encode` |
+| ✅ | `tokenizer decode` |
 -------------------
 
 NovelAI API documentation : https://api.novelai.net/docs/   
