@@ -136,7 +136,7 @@ export class StoriesManager {
         return encoder.decode(tokens);
     }
 
-    public async _generate(options: {
+    private async _generate(options: {
         input: string,
         model?: typeof StoryContent['prototype']['data']['settings']['model'],
         parameters?: {

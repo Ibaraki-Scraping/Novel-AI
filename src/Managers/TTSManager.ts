@@ -6,7 +6,7 @@ export class TTSManager {
 
     }
 
-    private async generate(options: {
+    public async generate(options: {
         text: string,
         voice?: number,
         seed?: "Naia" | "Ligeia" | "Aini" | "Orea" | "Claea" | "Lim" | "Aurae" | "Aulon" | "Elei" | "Ogma" | "Raid" | "Pega" | "Lam",
