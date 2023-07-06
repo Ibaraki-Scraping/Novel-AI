@@ -7,11 +7,14 @@ export * from "./Managers/StoriesManager";
 export * from "./Managers/UserManager";
 export * from "./Managers/ImageManager";
 export * from "./Managers/TTSManager";
+export * from "./Managers/Tokenizer";
 
 export * from "./Structures/Story";
 export * from "./Structures/StoryContent";
 export * from "./Structures/StoryMetadata";
 export * from "./Structures/ImageRequest";
 export * from "./Structures/SuggestedTag";
+
+export * from "./Types";
 
 export default NovelAI;

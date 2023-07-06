@@ -1,14 +1,22 @@
 {
   "name": "@ibaraki-douji/novelai",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "Use NovelAI in node.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "novelai",
+    "novel",
+    "ai",
+    "novelai-api",
+    "novelai-api-wrapper",
+    "novelai-wrapper",
+    "typescript"
+  ],
+  "author": "ibaraki-douji",
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.5.10",
