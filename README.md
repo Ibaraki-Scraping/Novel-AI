@@ -1,8 +1,6 @@
 # Novel AI
 Use novel AI on a program !
 
-### If you want to see a use case go into the Code tab and look for the `lib/main.js` file !!
-
 ## Getting started
 `npm i @ibaraki-douji/novelai --save`
 
