@@ -79,7 +79,7 @@ Use novel AI on a program !
 | ✅ | `create login key` |
 | ✅ | `create decrypt key` |
 | ✅ | `decrypt keystore` |
-| ❌ | `encrypt keystore` |
+| ✅ | `encrypt keystore` |
 | ✅ | `decrypt story` |
 | ❌ | `encrypt story` |
 | ✅ | `decrypt story content` |

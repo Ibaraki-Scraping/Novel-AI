@@ -1,4 +1,4 @@
-import { crypto_generichash, crypto_secretbox_NONCEBYTES, crypto_secretbox_open_easy } from "libsodium-wrappers-sumo";
+import { crypto_generichash, crypto_secretbox_NONCEBYTES, crypto_secretbox_easy, crypto_secretbox_open_easy } from "libsodium-wrappers-sumo";
 import { NovelAI } from "../NovelAI";
 import { gunzipSync, inflate, inflateRawSync } from "zlib";
 import { Inflate, inflateRaw } from "pako";
@@ -14,11 +14,11 @@ export class KeyStoreManager {
         return JSON.parse((await this.ai['fetch']('/user/keystore', {})).body.toString()).keystore;
     }
 
-    private async decryptKeyStore() {
-        const ks = await this.getKeyStore();
+    private async decryptKeyStore(store?: string) {
+        const ks = store || await this.getKeyStore();
         const key = this.ai['decryptToken'].replace("=", "");
 
-        if (!ks) {
+        if (!(store || ks)) {
             
         }
 
@@ -36,6 +36,31 @@ export class KeyStoreManager {
         ).keys;
 
         this.finished = true;
+    }
+
+    private async encryptKeyStore(store?: any) {
+        const key = this.ai['decryptToken'].replace("=", "");
+
+        if (!(store || this.keyStore)) {
+            
+        }
+
+        const json = JSON.stringify({
+            keys: store || this.keyStore
+        });
+
+        const nonce = crypto_generichash(24, key);
+
+        const sdata = crypto_secretbox_easy(
+            new TextEncoder().encode(json),
+            nonce,
+            crypto_generichash(32, key)
+        );
+
+        return Buffer.from(JSON.stringify({
+            sdata: Array.from(sdata),
+            nonce: Array.from(nonce)
+        })).toString('base64');
     }
 
     public async ready() {
