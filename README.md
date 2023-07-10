@@ -44,11 +44,11 @@ Use novel AI on a program !
 | ❌ | `PUT` | `/user/objects/aimodules` |
 | ❌ | `DELETE` | `/user/objects/aimodules/{id}` |
 | ❌ | `PATCH` | `/user/objects/aimodules/{id}` |
-| ❌ | `GET` | `/user/objects/shelf` |
-| ❌ | `GET` | `/user/objects/shelf/{id}` |
-| ❌ | `PUT` | `/user/objects/shelf` |
-| ❌ | `DELETE` | `/user/objects/shelf/{id}` |
-| ❌ | `PATCH` | `/user/objects/shelf/{id}` |
+| ✅ | `GET` | `/user/objects/shelf` |
+| ✅ | `GET` | `/user/objects/shelf/{id}` |
+| ✅ | `PUT` | `/user/objects/shelf` |
+| ✅ | `DELETE` | `/user/objects/shelf/{id}` |
+| ✅ | `PATCH` | `/user/objects/shelf/{id}` |
 
 #### AI (Done)
 | Done | Method | Endpoint |
@@ -58,6 +58,7 @@ Use novel AI on a program !
 | ✅ | `POST` | `/ai/generate-stream` |
 | ✅ | `POST` | `/ai/generate-image` action: `generate` |
 | ✅ | `POST` | `/ai/generate-image` action: `img2img` |
+| ✅ | `POST` | `/ai/generate-image` action: `infill` |
 | ✅ | `POST` | `/ai/annotate-image` |
 | ✅ | `POST` | `/ai/upscale` |
 | ❌ | `POST` | `/ai/classify` (reserved to admins) |
@@ -134,10 +135,17 @@ nai.user.login('email', 'password').then(async () => {
 - `nai.stories.generate(options)`
 - `nai.stories.generateStream(options)`
 -
+- `nai.shelves.get()`
+- `nai.shelves.get(id)`
+- `nai.shelves.create(options)`
+- `nai.shelves.update(id, options)`
+- `nai.shelves.delete(id)`
+-
 - `nai.images.generate(options)`
 - `nai.images.enhance(options)`
 - `nai.images.getMask(options)`
-- `nai.images.createVariations(options)`
+- `nai.images.generateVariations(options)`
+- `nai.images.generateInFill(options)`
 - `nai.images.getSuggestedTags(options)`
 - `nai.images.upscale(options)`
 -

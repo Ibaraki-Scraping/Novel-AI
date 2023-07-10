@@ -7,6 +7,7 @@ import { ImageManager } from "./Managers/ImageManager";
 import { TTSManager } from "./Managers/TTSManager";
 import { KeyStoreManager } from "./Managers/KeyStore";
 import { StoriesManager } from "./Managers/StoriesManager";
+import { ShelfManager } from "./Managers/ShelfManager";
 
 export class NovelAI {
 
@@ -20,6 +21,8 @@ export class NovelAI {
     public readonly tts = new TTSManager(this);
 
     public readonly stories = new StoriesManager(this);
+
+    public readonly shelves = new ShelfManager(this);
 
     private readonly keyStore = new KeyStoreManager(this);
 

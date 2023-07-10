@@ -88,4 +88,20 @@ export class KeyStoreManager {
         return JSON.parse(decompress.toString());
     }
 
+    public async decompressObject(obj: {
+        data: string
+    }) {
+        const i = new Uint8Array(Buffer.from(obj.data, 'base64')).slice(16);
+
+        const inf = new Inflate({
+            windowBits: -15,
+            to: "string",
+            chunkSize: 16384
+        });
+        inf.push(i, true)
+        const decompress = inf.result;
+
+        return JSON.parse(decompress.toString());
+    }
+
 }
