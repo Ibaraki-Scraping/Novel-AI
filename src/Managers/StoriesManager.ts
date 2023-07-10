@@ -91,7 +91,7 @@ export class StoriesManager {
         }, options)).body.toString());
     }
 
-    public async generateStream(options: Awaited<Parameters<StoriesManager['_generate']>[0]>, events: (str: string) => any = ()=>{}): Promise<string> {
+    public async generateStream(options: Parameters<StoriesManager['_generate']>[0], events: (str: string) => any = ()=>{}): Promise<string> {
 
         const body = await this._generate(({...options, stream: true }) as any);
 

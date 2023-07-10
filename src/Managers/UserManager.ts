@@ -1,7 +1,6 @@
 import { crypto_generichash, crypto_pwhash, crypto_pwhash_ALG_ARGON2ID13, crypto_pwhash_SALTBYTES, ready } from "libsodium-wrappers-sumo";
 import { NovelAI } from "../NovelAI";
 import { TTSManager } from "./TTSManager";
-import { ArgumentTypes } from "../Types";
 
 export class UserManager {
     
@@ -127,7 +126,7 @@ export class UserManager {
         imageUpdateStatus: number,
         ttsType: number,
         ttsRateStreamed: number,
-        ttsV2Seed: ArgumentTypes<TTSManager['generate']>[0]['seed'],
+        ttsV2Seed: Parameters<TTSManager['generate']>[0]['seed'],
         speakOutputs: boolean,
         speakComments: boolean,
         savedTtsSeeds: {

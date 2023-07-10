@@ -15,6 +15,4 @@ export * from "./Structures/StoryMetadata";
 export * from "./Structures/ImageRequest";
 export * from "./Structures/SuggestedTag";
 
-export * from "./Types";
-
 export default NovelAI;
