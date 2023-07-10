@@ -34,11 +34,11 @@ Use novel AI on a program !
 | ❌ | `PUT` | `/user/objects/storycontent` |
 | ✅ | `DELETE` | `/user/objects/storycontent/{id}` |
 | ❌ | `PATCH` | `/user/objects/storycontent/{id}` |
-| ❌ | `GET` | `/user/objects/presets` |
-| ❌ | `GET` | `/user/objects/presets/{id}` |
-| ❌ | `PUT` | `/user/objects/presets` |
-| ❌ | `DELETE` | `/user/objects/presets/{id}` |
-| ❌ | `PATCH` | `/user/objects/presets/{id}` |
+| ✅ | `GET` | `/user/objects/presets` |
+| ✅ | `GET` | `/user/objects/presets/{id}` |
+| ✅ | `PUT` | `/user/objects/presets` |
+| ✅ | `DELETE` | `/user/objects/presets/{id}` |
+| ✅ | `PATCH` | `/user/objects/presets/{id}` |
 | ✅ | `GET` | `/user/objects/aimodules` |
 | ✅ | `GET` | `/user/objects/aimodules/{id}` |
 | ❌ | `PUT` | `/user/objects/aimodules` |
@@ -84,8 +84,6 @@ Use novel AI on a program !
 | ❌ | `encrypt story` |
 | ✅ | `decrypt story content` |
 | ❌ | `encrypt story content` |
-| ❌ | `decrypt preset` |
-| ❌ | `encrypt preset` |
 | ✅ | `decrypt ai module` |
 | ❌ | `encrypt ai module` |
 | ✅ | `tokenizer encode` |
@@ -139,6 +137,12 @@ nai.user.login('email', 'password').then(async () => {
 - `nai.shelves.create(options)`
 - `nai.shelves.update(id, options)`
 - `nai.shelves.delete(id)`
+-
+- `nai.presets.get()`
+- `nai.presets.get(id)`
+- `nai.presets.create(options)`
+- `nai.presets.update(id, options)`
+- `nai.presets.delete(id)`
 -
 - `nai.modules.get()`
 - `nai.modules.get(id)`
