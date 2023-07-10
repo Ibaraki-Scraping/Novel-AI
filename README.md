@@ -27,22 +27,22 @@ Use novel AI on a program !
 | ✅ | `GET` | `/user/objects/stories` |
 | ✅ | `GET` | `/user/objects/stories/{id}` |
 | ❌ | `PUT` | `/user/objects/stories` |
-| ❌ | `DELETE` | `/user/objects/stories/{id}` |
+| ✅ | `DELETE` | `/user/objects/stories/{id}` |
 | ❌ | `PATCH` | `/user/objects/stories/{id}` |
 | ✅ | `GET` | `/user/objects/storycontent` |
 | ✅ | `GET` | `/user/objects/storycontent/{id}` |
 | ❌ | `PUT` | `/user/objects/storycontent` |
-| ❌ | `DELETE` | `/user/objects/storycontent/{id}` |
+| ✅ | `DELETE` | `/user/objects/storycontent/{id}` |
 | ❌ | `PATCH` | `/user/objects/storycontent/{id}` |
 | ❌ | `GET` | `/user/objects/presets` |
 | ❌ | `GET` | `/user/objects/presets/{id}` |
 | ❌ | `PUT` | `/user/objects/presets` |
 | ❌ | `DELETE` | `/user/objects/presets/{id}` |
 | ❌ | `PATCH` | `/user/objects/presets/{id}` |
-| ❌ | `GET` | `/user/objects/aimodules` |
-| ❌ | `GET` | `/user/objects/aimodules/{id}` |
+| ✅ | `GET` | `/user/objects/aimodules` |
+| ✅ | `GET` | `/user/objects/aimodules/{id}` |
 | ❌ | `PUT` | `/user/objects/aimodules` |
-| ❌ | `DELETE` | `/user/objects/aimodules/{id}` |
+| ✅ | `DELETE` | `/user/objects/aimodules/{id}` |
 | ❌ | `PATCH` | `/user/objects/aimodules/{id}` |
 | ✅ | `GET` | `/user/objects/shelf` |
 | ✅ | `GET` | `/user/objects/shelf/{id}` |
@@ -68,11 +68,10 @@ Use novel AI on a program !
 #### AI Modules
 | Done | Method | Endpoint |
 | --- | --- | --- |
-| ❌ | `GET` | `/ai/module/all` |
-| ❌ | `GET` | `/ai/module/{id}` |
-| ❌ | `POST` | `/ai/module/train` |
-| ❌ | `POST` | `/ai/module/buy-training-steps` |
-| ❌ | `DELETE` | `/ai/module/{id}` |
+| ✅ | `GET` | `/ai/module/all` |
+| ✅ | `GET` | `/ai/module/{id}` |
+| ✅ | `POST` | `/ai/module/train` |
+| ✅ | `DELETE` | `/ai/module/{id}` |
 
 ### Additional functions
 | Done | Function |
@@ -87,10 +86,8 @@ Use novel AI on a program !
 | ❌ | `encrypt story content` |
 | ❌ | `decrypt preset` |
 | ❌ | `encrypt preset` |
-| ❌ | `decrypt ai module` |
+| ✅ | `decrypt ai module` |
 | ❌ | `encrypt ai module` |
-| ❌ | `decrypt shelf` |
-| ❌ | `encrypt shelf` |
 | ✅ | `tokenizer encode` |
 | ✅ | `tokenizer decode` |
 -------------------
@@ -129,8 +126,10 @@ nai.user.login('email', 'password').then(async () => {
 -
 - `nai.stories.get()`
 - `nai.stories.get(id)`
+- `nai.stories.delete(id)`
 - `nai.stories.getContent()`
 - `nai.stories.getContent(id)`
+- `nai.stories.deleteContent(id)`
 - `nai.stories.generatePrompt(options)`
 - `nai.stories.generate(options)`
 - `nai.stories.generateStream(options)`
@@ -140,6 +139,14 @@ nai.user.login('email', 'password').then(async () => {
 - `nai.shelves.create(options)`
 - `nai.shelves.update(id, options)`
 - `nai.shelves.delete(id)`
+-
+- `nai.modules.get()`
+- `nai.modules.get(id)`
+- `nai.modules.delete(options)`
+- `nai.modules.train(options)`
+- `nai.modules.getTrained()`
+- `nai.modules.getTrained(id)`
+- `nai.modules.deleteTrained(id)`
 -
 - `nai.images.generate(options)`
 - `nai.images.enhance(options)`

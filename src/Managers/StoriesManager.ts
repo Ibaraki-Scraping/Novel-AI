@@ -36,6 +36,12 @@ export class StoriesManager {
         }
     }
 
+    public async delete(id: string): Promise<void> {
+        await this.ai['fetch']('/user/objects/stories/' + id, {
+            method: 'DELETE'
+        });
+    }
+
     getContent(id: string): Promise<StoryContent>
     getContent(): Promise<StoryContent[]>
     public async getContent(id?: string) {
@@ -58,6 +64,12 @@ export class StoriesManager {
         } else {
             return objs;
         }
+    }
+
+    public async deleteContent(id: string): Promise<void> {
+        await this.ai['fetch']('/user/objects/storycontent/' + id, {
+            method: 'DELETE'
+        });
     }
 
     public async generatePrompt(options: {
