@@ -1,6 +1,5 @@
-import { crypto_secretbox_NONCEBYTES, crypto_secretbox_open_easy } from "libsodium-wrappers-sumo";
+import { v4 } from "uuid";
 import { NovelAI } from "../NovelAI";
-import { StoryMetadata } from "../Structures/StoryMetadata";
 import { Story } from "../Structures/Story";
 import { StoryContent } from "../Structures/StoryContent";
 import { Encoder } from "./Tokenizer";
@@ -24,7 +23,9 @@ export class StoriesManager {
         }
 
         for (let obj of objs) {
-            obj.data = await this.ai['keyStore'].decryptObject(obj);
+            try {
+                obj.data = await this.ai['keyStore'].decryptObject(obj);
+            } catch (e) {}
         }
 
         objs = objs.map((obj) => new Story(this.ai, obj));
@@ -34,6 +35,71 @@ export class StoriesManager {
         } else {
             return objs;
         }
+    }
+
+    public async create(options: typeof Story['prototype']['data']): Promise<any> {
+        if (!options.createdAt) options.createdAt = Date.now();
+        if (!options.description) options.description = "";
+        if (options.id) delete options.id;
+        if (!options.title) options.title = "";
+        if (!options.favorite) options.favorite = false;
+        if (!options.tags) options.tags = [];
+        if (!options.isModified) options.isModified = false;
+        if (!options.lateUpdatedAt) options.lateUpdatedAt = Date.now();
+        if (!options.remoteId) options.remoteId = "";
+        if (!options.remoteStoryId) options.remoteStoryId = "";
+        if (!options.storyMetadataVersion) options.storyMetadataVersion = 1;
+        if (!options.textPreview) options.textPreview = "";
+        const meta = v4();
+
+        const encrypted = await this.ai['keyStore'].encryptObject({
+            meta,
+            data: options
+        });
+
+        return await this.ai['fetch']('/user/objects/stories', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }, {
+            data: encrypted,
+            meta,
+            changeIndex: 1
+        });/**/
+    }
+
+    public async edit(id: string, options: typeof Story['prototype']['data']): Promise<any> {
+        const story = await this.get(id);
+
+        if (!options.createdAt) options.createdAt = story.data.createdAt;
+        if (!options.description) options.description = story.data.description;
+        if (!options.id) options.id = story.data.id;
+        if (!options.title) options.title = story.data.title;
+        if (!options.favorite) options.favorite = story.data.favorite;
+        if (!options.tags) options.tags = story.data.tags;
+        if (!options.isModified) options.isModified = story.data.isModified;
+        if (!options.lateUpdatedAt) options.lateUpdatedAt = story.data.lateUpdatedAt;
+        if (!options.remoteId) options.remoteId = story.data.remoteId;
+        if (!options.remoteStoryId) options.remoteStoryId = story.data.remoteStoryId;
+        if (!options.storyMetadataVersion) options.storyMetadataVersion = story.data.storyMetadataVersion;
+        if (!options.textPreview) options.textPreview = story.data.textPreview;
+
+        const encrypted = await this.ai['keyStore'].encryptObject({
+            meta: story.meta,
+            data: options
+        });
+
+        return await this.ai['fetch']('/user/objects/stories/' + id, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }, {
+            data: encrypted,
+            meta: story.meta,
+            changeIndex: story.changeIndex
+        });
     }
 
     public async delete(id: string): Promise<void> {
@@ -64,6 +130,57 @@ export class StoriesManager {
         } else {
             return objs;
         }
+    }
+
+    public async editContent(id: string, options: typeof StoryContent['prototype']['data']): Promise<any> {
+        const story = await this.getContent(id);
+
+        if (!options.bannedSequenceGroups) options.bannedSequenceGroups = story.data.bannedSequenceGroups;
+        if (!options.context) options.context = story.data.context;
+        if (!options.contextDefaults) options.contextDefaults = story.data.contextDefaults;
+        if (!options.dettingsDirty) options.dettingsDirty = story.data.dettingsDirty;
+        if (!options.didGenerate) options.didGenerate = story.data.didGenerate;
+        if (!options.ephemeralContext) options.ephemeralContext = story.data.ephemeralContext;
+        if (!options.lorebook) options.lorebook = story.data.lorebook;
+        if (!options.phraseBiasGroups) options.phraseBiasGroups = story.data.phraseBiasGroups;
+        if (!options.settings) options.settings = story.data.settings;
+        if (!options.story) options.story = story.data.story;
+        if (!options.storyContentVersion) options.storyContentVersion = story.data.storyContentVersion;
+        if (!options.storyContextConfig) options.storyContextConfig = story.data.storyContextConfig;
+
+
+        const encrypted = await this.ai['keyStore'].encryptCompressObject({
+            meta: story.meta,
+            data: options
+        });
+
+        return await this.ai['fetch']('/user/objects/storycontent/' + id, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }, {
+            data: encrypted,
+            meta: story.meta,
+            changeIndex: story.changeIndex
+        });
+    }
+
+    public async createContent(options: typeof StoryContent['prototype']['data']): Promise<any> {
+        
+        if (!options.storyContentVersion) options.storyContentVersion = 6;
+        if (!options.settings) options.settings = {};
+        if (!options.settings.model) options.settings.model = "euterpe-v2";
+        if (!options.settings.mode) options.settings.mode = 0.63;
+
+        
+
+        const meta = v4();
+
+        const encrypted = await this.ai['keyStore'].encryptCompressObject({
+            meta: meta,
+            data: options
+        });
     }
 
     public async deleteContent(id: string): Promise<void> {

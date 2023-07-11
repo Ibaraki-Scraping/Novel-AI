@@ -1,7 +1,7 @@
-import { crypto_generichash, crypto_secretbox_NONCEBYTES, crypto_secretbox_easy, crypto_secretbox_open_easy } from "libsodium-wrappers-sumo";
+import { crypto_generichash, crypto_secretbox_NONCEBYTES, crypto_secretbox_easy, crypto_secretbox_keygen, crypto_secretbox_open_easy, randombytes_buf } from "libsodium-wrappers-sumo";
 import { NovelAI } from "../NovelAI";
 import { gunzipSync, inflate, inflateRawSync } from "zlib";
-import { Inflate, inflateRaw } from "pako";
+import { Deflate, Inflate, inflateRaw } from "pako";
 
 export class KeyStoreManager {
 
@@ -10,19 +10,33 @@ export class KeyStoreManager {
 
     constructor(private ai: NovelAI) {}
 
-    private async getKeyStore() {
-        return JSON.parse((await this.ai['fetch']('/user/keystore', {})).body.toString()).keystore;
+    private async getKeyStore(): Promise<{keystore: string, changeIndex: number}> {
+        return JSON.parse((await this.ai['fetch']('/user/keystore', {})).body.toString());
     }
 
-    private async decryptKeyStore(store?: string) {
-        const ks = store || await this.getKeyStore();
+    private async saveKeyStore() {
+        const current = await this.getKeyStore();
+        const ks = await this.encryptKeyStore();
+        await this.ai['fetch']('/user/keystore', {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }, {
+            keystore: ks,
+            changeIndex: current.changeIndex
+        });
+    }
+
+    private async decryptKeyStore() {
+        const ks = await this.getKeyStore();
         const key = this.ai['decryptToken'].replace("=", "");
 
-        if (!(store || ks)) {
+        if (!ks) {
             
         }
 
-        const json = JSON.parse(Buffer.from(ks, 'base64').toString());
+        const json = JSON.parse(Buffer.from(ks.keystore, 'base64').toString());
 
         this.keyStore = JSON.parse(
             new TextDecoder()
@@ -38,15 +52,15 @@ export class KeyStoreManager {
         this.finished = true;
     }
 
-    private async encryptKeyStore(store?: any) {
+    private async encryptKeyStore() {
         const key = this.ai['decryptToken'].replace("=", "");
 
-        if (!(store || this.keyStore)) {
+        if (!this.keyStore) {
             
         }
 
         const json = JSON.stringify({
-            keys: store || this.keyStore
+            keys: this.keyStore
         });
 
         const nonce = crypto_generichash(24, key);
@@ -77,6 +91,13 @@ export class KeyStoreManager {
     public async get(key: string) {
         await this.ready();
 
+        let val = this.keyStore[key];
+
+        if (!val) {
+            this.keyStore[key] = [...crypto_secretbox_keygen()];
+            await this.saveKeyStore();
+        }
+
         return this.keyStore[key];
     }
 
@@ -91,6 +112,21 @@ export class KeyStoreManager {
         const s = crypto_secretbox_open_easy(a, o, new Uint8Array(r));
         const txt = new TextDecoder().decode(s);
         return JSON.parse(txt);
+    }
+
+    public async encryptObject(obj: {
+        meta: string,
+        data: any
+    }) {
+        const r = await this.ai['keyStore'].get(obj.meta);
+        const nonce = crypto_generichash(24, new TextEncoder().encode(obj.meta));
+        const sdata = crypto_secretbox_easy(
+            new TextEncoder().encode(JSON.stringify(obj.data)),
+            nonce,
+            new Uint8Array(r)
+        );
+
+        return Buffer.from(Array.from(nonce).concat(Array.from(sdata))).toString('base64');
     }
 
     public async decompressDecryptObject(obj: {
@@ -110,7 +146,41 @@ export class KeyStoreManager {
         inf.push(s, true)
         const decompress = inf.result;
 
-        return JSON.parse(decompress.toString());
+        return {
+            ...JSON.parse(decompress.toString()),
+            nonce: o
+        };
+    }
+
+    public async encryptCompressObject(obj: {
+        meta: string,
+        data: any,
+        nonce?: Uint8Array
+    }) {
+        const key = await this.ai['keyStore'].get(obj.meta);
+        const nonce = randombytes_buf(crypto_secretbox_NONCEBYTES);
+        
+        obj.data = new TextEncoder().encode(JSON.stringify(obj.data));
+
+        const def = new Deflate({
+            windowBits: -15,
+            chunkSize: 16384
+        });
+
+        def.push(obj.data, true);
+
+        const compressedData = def.result;
+        
+        obj.data = crypto_secretbox_easy(
+            compressedData,
+            nonce,
+            new Uint8Array(key)
+        )
+
+        const COMPRESSION_PREFIX = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
+        obj.data = new Uint8Array([...COMPRESSION_PREFIX, ...nonce, ...obj.data]);
+
+        return Buffer.from(obj.data).toString('base64');
     }
 
     public async decompressObject(obj: {

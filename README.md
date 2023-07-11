@@ -17,7 +17,7 @@ Use novel AI on a program !
 | ✅ | `GET` | `/user/giftkeys` |
 | ✅ | `GET` | `/user/subscription` |
 | ✅ | `GET` | `/user/keystore` |
-| ❌ | `PUT` | `/user/keystore` |
+| ✅ | `PUT` | `/user/keystore` |
 | ✅ | `GET` | `/user/clientsettings` |
 | ✅ | `PUT` | `/user/clientsettings` |
 
@@ -26,14 +26,14 @@ Use novel AI on a program !
 | --- | --- | --- |
 | ✅ | `GET` | `/user/objects/stories` |
 | ✅ | `GET` | `/user/objects/stories/{id}` |
-| ❌ | `PUT` | `/user/objects/stories` |
+| ✅ | `PUT` | `/user/objects/stories` |
 | ✅ | `DELETE` | `/user/objects/stories/{id}` |
-| ❌ | `PATCH` | `/user/objects/stories/{id}` |
+| ✅ | `PATCH` | `/user/objects/stories/{id}` |
 | ✅ | `GET` | `/user/objects/storycontent` |
 | ✅ | `GET` | `/user/objects/storycontent/{id}` |
 | ❌ | `PUT` | `/user/objects/storycontent` |
 | ✅ | `DELETE` | `/user/objects/storycontent/{id}` |
-| ❌ | `PATCH` | `/user/objects/storycontent/{id}` |
+| ✅ | `PATCH` | `/user/objects/storycontent/{id}` |
 | ✅ | `GET` | `/user/objects/presets` |
 | ✅ | `GET` | `/user/objects/presets/{id}` |
 | ✅ | `PUT` | `/user/objects/presets` |
@@ -81,9 +81,9 @@ Use novel AI on a program !
 | ✅ | `decrypt keystore` |
 | ✅ | `encrypt keystore` |
 | ✅ | `decrypt story` |
-| ❌ | `encrypt story` |
+| ✅ | `encrypt story` |
 | ✅ | `decrypt story content` |
-| ❌ | `encrypt story content` |
+| ✅ | `encrypt story content` |
 | ✅ | `decrypt ai module` |
 | ❌ | `encrypt ai module` |
 | ✅ | `tokenizer encode` |
@@ -124,9 +124,12 @@ nai.user.login('email', 'password').then(async () => {
 -
 - `nai.stories.get()`
 - `nai.stories.get(id)`
+- `nai.stories.create(options)`
+- `nai.stories.edit(id, options)`
 - `nai.stories.delete(id)`
 - `nai.stories.getContent()`
 - `nai.stories.getContent(id)`
+- `nai.stories.editContent(id, options)`
 - `nai.stories.deleteContent(id)`
 - `nai.stories.generatePrompt(options)`
 - `nai.stories.generate(options)`
