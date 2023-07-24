@@ -48,7 +48,9 @@ export class AIModuleManager {
         }
 
         for (let obj of objs) {
-            obj.data = await this.ai['keyStore'].decryptObject(obj);
+            try {
+                obj.data = await this.ai['keyStore'].decryptObject(obj);
+            } catch (e) {}
         }
 
         if (id) {
@@ -56,6 +58,20 @@ export class AIModuleManager {
         } else {
             return objs;
         }
+    }
+
+    public async create(options: {
+        name: string,
+        description: string,
+        remoteId: string,
+        mode: number,
+        image: string
+    }): ReturnType<AIModuleManager['get']> {
+        const res = await this.ai['fetch']('/user/objects/aimodules', {
+            method: 'POST'
+        }, options);
+
+        return await this.get(JSON.parse(res.body.toString()).id);
     }
 
     public async delete(id: string): Promise<void> {

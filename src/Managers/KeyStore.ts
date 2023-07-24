@@ -48,7 +48,6 @@ export class KeyStoreManager {
                 )
             )
         ).keys;
-
         this.finished = true;
     }
 
@@ -88,12 +87,12 @@ export class KeyStoreManager {
         });
     }
 
-    public async get(key: string) {
+    public async get(key: string, create: boolean = false) {
         await this.ready();
 
         let val = this.keyStore[key];
 
-        if (!val) {
+        if (!val && create) {
             this.keyStore[key] = [...crypto_secretbox_keygen()];
             await this.saveKeyStore();
         }
@@ -118,7 +117,7 @@ export class KeyStoreManager {
         meta: string,
         data: any
     }) {
-        const r = await this.ai['keyStore'].get(obj.meta);
+        const r = await this.ai['keyStore'].get(obj.meta, true);
         const nonce = crypto_generichash(24, new TextEncoder().encode(obj.meta));
         const sdata = crypto_secretbox_easy(
             new TextEncoder().encode(JSON.stringify(obj.data)),
@@ -157,7 +156,7 @@ export class KeyStoreManager {
         data: any,
         nonce?: Uint8Array
     }) {
-        const key = await this.ai['keyStore'].get(obj.meta);
+        const key = await this.ai['keyStore'].get(obj.meta, true);
         const nonce = randombytes_buf(crypto_secretbox_NONCEBYTES);
         
         obj.data = new TextEncoder().encode(JSON.stringify(obj.data));

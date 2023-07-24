@@ -120,7 +120,9 @@ export class StoriesManager {
         }
 
         for (let obj of objs) {
-            obj.data = await this.ai['keyStore'].decompressDecryptObject(obj);
+            try {
+                obj.data = await this.ai['keyStore'].decompressDecryptObject(obj);
+            } catch (e) {}
         }
 
         objs = objs.map((obj) => new StoryContent(this.ai, obj));
@@ -130,6 +132,76 @@ export class StoriesManager {
         } else {
             return objs;
         }
+    }
+
+    public async createContent(options: typeof StoryContent['prototype']['data']): Promise<any> {
+        if (!options.storyContentVersion) options.storyContentVersion = 6;
+        if (!options.settings) options.settings = {};
+        if (!options.settings.model) options.settings.model = "euterpe-v2";
+        if (!options.settings.mode) options.settings.mode = 0.63;
+        if (!options.settings.parameters) options.settings.parameters = {
+            textGenerationSettingsVersion: 1
+        };
+        if (!options.settings.parameters.textGenerationSettingsVersion) options.settings.parameters.textGenerationSettingsVersion = 1;
+        if (!options.settings.parameters.temperature) options.settings.parameters.temperature = 0.63;
+        if (!options.settings.parameters.max_length) options.settings.parameters.max_length = 40;
+        if (!options.settings.parameters.min_length) options.settings.parameters.min_length = 1;
+        if (!options.settings.parameters.top_k) options.settings.parameters.top_k = 0;
+        if (!options.settings.parameters.top_p) options.settings.parameters.top_p = 0.975;
+        if (!options.settings.parameters.top_a) options.settings.parameters.top_a = 0;
+        if (!options.settings.parameters.typical_p) options.settings.parameters.typical_p = 0.999;
+        if (!options.settings.parameters.tail_free_sampling) options.settings.parameters.tail_free_sampling = false;
+        if (!options.settings.parameters.repetition_penalty) options.settings.parameters.repetition_penalty = 1.148125;
+        if (!options.settings.parameters.repetition_penalty_range) options.settings.parameters.repetition_penalty_range = 2048;
+        if (!options.settings.parameters.repetition_penalty_slope) options.settings.parameters.repetition_penalty_slope = 0.09;
+        if (!options.settings.parameters.repetition_penalty_frequency) options.settings.parameters.repetition_penalty_frequency = 0;
+        if (!options.settings.parameters.repetition_penalty_presence) options.settings.parameters.repetition_penalty_presence = 0;
+        if (!options.settings.parameters.repetition_penalty_default_whitelist) options.settings.parameters.repetition_penalty_default_whitelist = true;
+        if (!options.settings.parameters.order) options.settings.parameters.order = [2, 1, 3, 0];
+        if (!options.settings.preset) options.settings.preset = "default-genesis";
+        if (!options.settings.trimResponses) options.settings.trimResponses = false;
+        if (!options.settings.banBrackets) options.settings.banBrackets = false;
+        if (!options.settings.prefix) options.settings.prefix = "";
+        if (!options.settings.dynamicPenaltyRange) options.settings.dynamicPenaltyRange = false;
+        if (!options.settings.prefixMode) options.settings.prefixMode = 0;
+        if (!options.settings.mode) options.settings.mode = 0.63;
+        if (!options.settings.model) options.settings.model = "euterpe-v2";
+        if (!options.story) options.story = {};
+        if (!options.story.version) options.story.version = 1;
+        if (!options.story.step) options.story.step = 0;
+        if (!options.story.datablocks) options.story.datablocks = [];
+        if (!options.story.currentBlock) options.story.currentBlock = 0;
+        if (!options.story.fragments) options.story.fragments = [];
+        if (!options.storyContentVersion) options.storyContentVersion = 6;
+        if (!options.storyContextConfig) options.storyContextConfig = {};
+        if (!options.storyContextConfig.allowIntertionInside) options.storyContextConfig.allowIntertionInside = false;
+        if (!options.storyContextConfig.budgetPriority) options.storyContextConfig.budgetPriority = 0;
+        if (!options.storyContextConfig.insertionType) options.storyContextConfig.insertionType = "";
+        if (!options.storyContextConfig.intertionPosition) options.storyContextConfig.intertionPosition = 0;
+        if (!options.storyContextConfig.maximumTrimType) options.storyContextConfig.maximumTrimType = "";
+        if (!options.storyContextConfig.prefix) options.storyContextConfig.prefix = "";
+        if (!options.storyContextConfig.reservedTokens) options.storyContextConfig.reservedTokens = -1;
+        if (!options.storyContextConfig.suffix) options.storyContextConfig.suffix = "";
+        if (!options.storyContextConfig.tokenBudget) options.storyContextConfig.tokenBudget = 0;
+        if (!options.storyContextConfig.trimDirection) options.storyContextConfig.trimDirection = "";
+
+        const meta = v4();
+
+        const encrypted = await this.ai['keyStore'].encryptCompressObject({
+            meta,
+            data: options
+        });
+
+        return await this.ai['fetch']('/user/objects/storycontent', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }, {
+            data: encrypted,
+            meta,
+            changeIndex: 1
+        });
     }
 
     public async editContent(id: string, options: typeof StoryContent['prototype']['data']): Promise<any> {
@@ -142,12 +214,55 @@ export class StoriesManager {
         if (!options.didGenerate) options.didGenerate = story.data.didGenerate;
         if (!options.ephemeralContext) options.ephemeralContext = story.data.ephemeralContext;
         if (!options.lorebook) options.lorebook = story.data.lorebook;
+        if (!options.lorebook.categories) options.lorebook.categories = story.data.lorebook.categories;
+        if (!options.lorebook.entries) options.lorebook.entries = story.data.lorebook.entries;
+        if (!options.lorebook.lorebookVersion) options.lorebook.lorebookVersion = story.data.lorebook.lorebookVersion;
+        if (!options.lorebook.settings) options.lorebook.settings = story.data.lorebook.settings;
         if (!options.phraseBiasGroups) options.phraseBiasGroups = story.data.phraseBiasGroups;
         if (!options.settings) options.settings = story.data.settings;
+        if (!options.settings.banBrackets) options.settings.banBrackets = story.data.settings.banBrackets;
+        if (!options.settings.dynamicPenaltyRange) options.settings.dynamicPenaltyRange = story.data.settings.dynamicPenaltyRange;
+        if (!options.settings.mode) options.settings.mode = story.data.settings.mode;
+        if (!options.settings.model) options.settings.model = story.data.settings.model;
+        if (!options.settings.prefix) options.settings.prefix = story.data.settings.prefix;
+        if (!options.settings.prefixMode) options.settings.prefixMode = story.data.settings.prefixMode;
+        if (!options.settings.preset) options.settings.preset = story.data.settings.preset;
+        if (!options.settings.trimResponses) options.settings.trimResponses = story.data.settings.trimResponses;
+        if (!options.settings.parameters) options.settings.parameters = story.data.settings.parameters;
+        if (!options.settings.parameters.textGenerationSettingsVersion) options.settings.parameters.textGenerationSettingsVersion = story.data.settings.parameters.textGenerationSettingsVersion;
+        if (!options.settings.parameters.temperature) options.settings.parameters.temperature = story.data.settings.parameters.temperature;
+        if (!options.settings.parameters.max_length) options.settings.parameters.max_length = story.data.settings.parameters.max_length;
+        if (!options.settings.parameters.min_length) options.settings.parameters.min_length = story.data.settings.parameters.min_length;
+        if (!options.settings.parameters.top_k) options.settings.parameters.top_k = story.data.settings.parameters.top_k;
+        if (!options.settings.parameters.top_p) options.settings.parameters.top_p = story.data.settings.parameters.top_p;
+        if (!options.settings.parameters.top_a) options.settings.parameters.top_a = story.data.settings.parameters.top_a;
+        if (!options.settings.parameters.typical_p) options.settings.parameters.typical_p = story.data.settings.parameters.typical_p;
+        if (!options.settings.parameters.tail_free_sampling) options.settings.parameters.tail_free_sampling = story.data.settings.parameters.tail_free_sampling;
+        if (!options.settings.parameters.repetition_penalty) options.settings.parameters.repetition_penalty = story.data.settings.parameters.repetition_penalty;
+        if (!options.settings.parameters.repetition_penalty_range) options.settings.parameters.repetition_penalty_range = story.data.settings.parameters.repetition_penalty_range;
+        if (!options.settings.parameters.repetition_penalty_slope) options.settings.parameters.repetition_penalty_slope = story.data.settings.parameters.repetition_penalty_slope;
+        if (!options.settings.parameters.repetition_penalty_frequency) options.settings.parameters.repetition_penalty_frequency = story.data.settings.parameters.repetition_penalty_frequency;
+        if (!options.settings.parameters.repetition_penalty_presence) options.settings.parameters.repetition_penalty_presence = story.data.settings.parameters.repetition_penalty_presence;
+        if (!options.settings.parameters.repetition_penalty_default_whitelist) options.settings.parameters.repetition_penalty_default_whitelist = story.data.settings.parameters.repetition_penalty_default_whitelist;
+        if (!options.settings.parameters.order) options.settings.parameters.order = story.data.settings.parameters.order;
         if (!options.story) options.story = story.data.story;
+        if (!options.story.currentBlock) options.story.currentBlock = story.data.story.currentBlock;
+        if (!options.story.datablocks) options.story.datablocks = story.data.story.datablocks;
+        if (!options.story.fragments) options.story.fragments = story.data.story.fragments;
+        if (!options.story.step) options.story.step = story.data.story.step;
+        if (!options.story.version) options.story.version = story.data.story.version;
         if (!options.storyContentVersion) options.storyContentVersion = story.data.storyContentVersion;
         if (!options.storyContextConfig) options.storyContextConfig = story.data.storyContextConfig;
-
+        if (!options.storyContextConfig.allowIntertionInside) options.storyContextConfig.allowIntertionInside = story.data.storyContextConfig.allowIntertionInside;
+        if (!options.storyContextConfig.budgetPriority) options.storyContextConfig.budgetPriority = story.data.storyContextConfig.budgetPriority;
+        if (!options.storyContextConfig.insertionType) options.storyContextConfig.insertionType = story.data.storyContextConfig.insertionType;
+        if (!options.storyContextConfig.intertionPosition) options.storyContextConfig.intertionPosition = story.data.storyContextConfig.intertionPosition;
+        if (!options.storyContextConfig.maximumTrimType) options.storyContextConfig.maximumTrimType = story.data.storyContextConfig.maximumTrimType;
+        if (!options.storyContextConfig.prefix) options.storyContextConfig.prefix = story.data.storyContextConfig.prefix;
+        if (!options.storyContextConfig.reservedTokens) options.storyContextConfig.reservedTokens = story.data.storyContextConfig.reservedTokens;
+        if (!options.storyContextConfig.suffix) options.storyContextConfig.suffix = story.data.storyContextConfig.suffix;
+        if (!options.storyContextConfig.tokenBudget) options.storyContextConfig.tokenBudget = story.data.storyContextConfig.tokenBudget;
+        if (!options.storyContextConfig.trimDirection) options.storyContextConfig.trimDirection = story.data.storyContextConfig.trimDirection;
 
         const encrypted = await this.ai['keyStore'].encryptCompressObject({
             meta: story.meta,
@@ -163,23 +278,6 @@ export class StoriesManager {
             data: encrypted,
             meta: story.meta,
             changeIndex: story.changeIndex
-        });
-    }
-
-    public async createContent(options: typeof StoryContent['prototype']['data']): Promise<any> {
-        
-        if (!options.storyContentVersion) options.storyContentVersion = 6;
-        if (!options.settings) options.settings = {};
-        if (!options.settings.model) options.settings.model = "euterpe-v2";
-        if (!options.settings.mode) options.settings.mode = 0.63;
-
-        
-
-        const meta = v4();
-
-        const encrypted = await this.ai['keyStore'].encryptCompressObject({
-            meta: meta,
-            data: options
         });
     }
 

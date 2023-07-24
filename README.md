@@ -31,7 +31,7 @@ Use novel AI on a program !
 | ✅ | `PATCH` | `/user/objects/stories/{id}` |
 | ✅ | `GET` | `/user/objects/storycontent` |
 | ✅ | `GET` | `/user/objects/storycontent/{id}` |
-| ❌ | `PUT` | `/user/objects/storycontent` |
+| ✅ | `PUT` | `/user/objects/storycontent` |
 | ✅ | `DELETE` | `/user/objects/storycontent/{id}` |
 | ✅ | `PATCH` | `/user/objects/storycontent/{id}` |
 | ✅ | `GET` | `/user/objects/presets` |
